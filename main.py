@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 from colorama import init, Fore, Back, Style
 from eth_account import Account
 from eth_account.messages import encode_defunct
-from websocket import create_connection
+#from websocket import create_connection
 
 init(autoreset=True)
 
@@ -443,8 +443,8 @@ class TeneoAutoref:
 def main():
     banner = f"""
 {Fore.LIGHTCYAN_EX}╔═══════════════════════════════════════════╗
-║          Teneo Auto Referral Bot         ║
-║            Author: Nofan Rambe           ║
+║          Teneo Auto Referral Bot          ║
+║            Author: Nofan Rambe            ║
 ╚═══════════════════════════════════════════╝{Style.RESET_ALL}
 """
     print(banner)    
