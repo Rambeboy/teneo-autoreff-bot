@@ -442,8 +442,8 @@ class TeneoAutoref:
 def main():
     banner = f"""
 {Fore.LIGHTCYAN_EX}╔═══════════════════════════════════════════╗
-║            Teneo Auto Referral Bot            ║
-║             Author : Nofan Rambe              ║
+║            Teneo Auto Referral Bot           ║
+║             Author : Nofan Rambe             ║
 ╚═══════════════════════════════════════════╝{Style.RESET_ALL}
 """
     print(banner)    
