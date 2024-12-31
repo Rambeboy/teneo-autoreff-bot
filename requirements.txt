@@ -1,0 +1,8 @@
+requests
+names
+websocket
+websocket-client
+beautifulsoup4
+fake-useragent
+colorama
+eth-account
