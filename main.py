@@ -4,7 +4,7 @@ import random
 import string
 import names
 import time
-import websocket
+import websocket as activation
 import secrets
 from datetime import datetime
 from fake_useragent import UserAgent
@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 from colorama import init, Fore, Back, Style
 from eth_account import Account
 from eth_account.messages import encode_defunct
-#from websocket import create_connection
+from websocket import create_connection
 
 init(autoreset=True)
 
@@ -343,7 +343,7 @@ class TeneoAutoref:
         ws_url = f"wss://secure.ws.teneo.pro/websocket?accessToken={access_token}&version=v0.2"
         
         try:
-            ws = websocket.create_connection(
+            ws = activation.create_connection(
                 ws_url,
                 header={
                     'Host': 'secure.ws.teneo.pro',
