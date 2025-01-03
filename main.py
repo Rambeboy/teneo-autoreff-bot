@@ -342,32 +342,36 @@ class TeneoAutoref:
         log_message(self.current_num, self.total, "Waiting for activation...", "process")
         ws_url = f"wss://secure.ws.teneo.pro/websocket?accessToken={access_token}&version=v0.2"
         
-        try:
-            ws = activation.create_connection(
-                ws_url,
-                header={
-                    'Host': 'secure.ws.teneo.pro',
-                    'Upgrade': 'websocket',
-                    'Origin': 'chrome-extension://emcclcoaglgcpoognfiggmhnhgabppkm',
-                    'Sec-WebSocket-Extensions': 'permessage-deflate; client_max_window_bits',
-                    'User-Agent': self.ua.random
-                },
-                proxy=self.proxy if self.proxy else None,
-                timeout=120
-            )
-            
-            ping_message = json.dumps({"type": "PING"})
-            ws.send(ping_message)
-            
-            response = ws.recv()
-            ws.close()
-            
-            log_message(self.current_num, self.total, "Activation successful", "success")
-            return True
-            
-        except Exception as e:
-            log_message(self.current_num, self.total, f"Activation error: {str(e)}", "error")
-            return False
+        while True:
+            try:
+                ws = activation.create_connection(
+                    ws_url,
+                    header={
+                        'Host': 'secure.ws.teneo.pro',
+                        'Upgrade': 'websocket', 
+                        'Connection': 'upgrade',
+                        'Origin': 'chrome-extension://emcclcoaglgcpoognfiggmhnhgabppkm',
+                        'User-Agent': self.ua.random
+                    },
+                    proxy=self.proxy if self.proxy else None,
+                    timeout=120
+                )
+                
+                while True:
+                    ping_message = json.dumps({"type": "PING"})
+                    ws.send(ping_message)
+                    
+                    response = ws.recv()
+                    response_data = json.loads(response)
+                    
+                    if "message" in response_data and response_data["message"] == "Connected successfully":
+                        ws.close()
+                        log_message(self.current_num, self.total, "Activation successful", "success")
+                        return True
+                    
+            except Exception as e:
+                log_message(self.current_num, self.total, f"Activation error. Retrying, just wait...", "warning")
+                continue
         
     def check_user_onboarded(self, access_token):
         if not self.connect_websocket(access_token):
@@ -394,7 +398,7 @@ class TeneoAutoref:
             data = response.json()
             if data.get('success') == True:
                 log_message(self.current_num, self.total, "Account Activated! But still PENDING", "success")
-                log_message(self.current_num, self.total, f"{Fore.LIGHTYELLOW_EX}TIPS: Run the account with extension bot until 100 HB for VALIDATION{Fore.RESET}", "success")
+                log_message(self.current_num, self.total, f"{Fore.LIGHTYELLOW_EX}IMPORTANT: Run accounts with teneo-bot until 100HB for SUCCESS referral{Fore.RESET}", "success")
                 return True
                 
             log_message(self.current_num, self.total, f"User not yet activated, Please wait...", "warning")
@@ -481,7 +485,8 @@ def main():
                 log_message(i+1, count, f"Password: {account['password']}", "success")
                 log_message(i+1, count, f"Wallet Address: {account['wallet_address']}", "success")
                 log_message(i+1, count, f"Points: 51000", "success")
-                log_message(i+1, count, f"{Fore.LIGHTRED_EX}Extension Bot: https://github.com/im-hanzou/teneo-bot{Fore.RESET}", "success")  
+                log_message(i+1, count, f"{Fore.LIGHTRED_EX}Link Bot: https://github.com/im-hanzou/teneo-bot{Fore.RESET}", "success") 
+                log_message(i+1, count, f"{Fore.LIGHTRED_EX}Please ensure that all successfully referred accounts run teneo-bot{Fore.RESET}", "success")  
             else:
                 log_message(i+1, count, f"Failed: {message}", "error")
                 if generator.proxy:
