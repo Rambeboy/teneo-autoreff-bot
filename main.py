@@ -245,19 +245,23 @@ class TeneoAutoref:
 
     def verify_email(self, verification_url):
         log_message(self.current_num, self.total, "Verifying email...", "process")
-        response = self.make_request('GET', verification_url, headers={'User-Agent': self.ua.random}, timeout=60)
         
-        if not response:
+        initial_response = self.make_request('GET', verification_url, headers={'User-Agent': self.ua.random}, timeout=60, allow_redirects=False)
+        if not initial_response:
             return False
-            
-        success = 'Your email is verified' in response.text
         
-        if success:
-            log_message(self.current_num, self.total, "Email verification successful", "success")
-        else:
-            log_message(self.current_num, self.total, "Email verification failed", "error")
-        return success
-
+        if initial_response.headers.get('location'):
+            redirect_url = initial_response.headers['location']
+            if '#access_token=' in redirect_url:
+                dashboard_url = 'https://dashboard.teneo.pro/auth/verify'
+                final_response = self.make_request('GET', dashboard_url, headers={'User-Agent': self.ua.random}, timeout=60)
+                
+                if final_response and 'Teneo Dashboard' in final_response.text:
+                    log_message(self.current_num, self.total, "Email verification successful", "success")
+                    return True
+        
+        log_message(self.current_num, self.total, "Email verification failed", "error")
+        return False
     def login(self, email, password):
         log_message(self.current_num, self.total, "Attempting login...", "process")
         headers = {
@@ -447,8 +451,8 @@ class TeneoAutoref:
 def main():
     banner = f"""
 {Fore.LIGHTCYAN_EX}╔═══════════════════════════════════════════╗
-║          Teneo Auto Referral Bot          ║
-║            Author: Nofan Rambe            ║
+║           Teneo Auto Referral             ║
+║           Author: Nofan Rambe             ║
 ╚═══════════════════════════════════════════╝{Style.RESET_ALL}
 """
     print(banner)    
