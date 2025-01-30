@@ -561,8 +561,8 @@ def main():
 """
     print(banner)    
     
-    ref_code = input(f"{Fore.LIGHTYELLOW_EX}Enter referral code, example : HyPYD: {Fore.RESET}")
-    count = int(input(f"{Fore.LIGHTYELLOW_EX}How many referrals?: {Fore.RESET}"))
+    ref_code = input(f"{Fore.LIGHTYELLOW_EX}Enter referral code : {Fore.RESET}")
+    count = int(input(f"{Fore.LIGHTYELLOW_EX}How many referrals  : {Fore.RESET}"))
     
     successful = 0
     
